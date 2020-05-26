@@ -34,7 +34,7 @@ func spawnFolderSizeCollector(id string, dir string) {
 	folderSizeMetrics := NewFolderSizeMetrics(id)
 
 	go func() {
-		ticker := time.NewTicker(1 * time.Second)
+		ticker := time.NewTicker(time.Duration(cfg.FolderRescanInterval) * time.Second)
 		defer ticker.Stop()
 		for {
 			select {

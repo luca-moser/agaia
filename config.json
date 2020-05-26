@@ -1,5 +1,6 @@
 {
   "bind_address": ":2112",
+  "folder_rescan_interval": 60,
   "folder_sizes": [
     {
       "id": "db_dir",
