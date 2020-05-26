@@ -23,6 +23,12 @@ type (
 		NumGC        uint32 `json:"num_gc"`
 		LastPauseGC  uint64 `json:"last_pause_gc"`
 	}
+
+	TPSMetrics struct {
+		Incoming uint32 `json:"incoming"`
+		New      uint32 `json:"new"`
+		Outgoing uint32 `json:"outgoing"`
+	}
 )
 
 const (
