@@ -67,7 +67,7 @@ func spawnIRICollector(id string, host string) {
 					log.Println("unable to fetch node info", err)
 					continue
 				}
-				iriMetrics.TotalMemory.Set(float64(info.JREFreeMemory))
+				iriMetrics.TotalMemory.Set(float64(info.JRETotalMemory))
 				iriMetrics.MaxMemory.Set(float64(info.JREMaxMemory))
 				iriMetrics.FreeMemory.Set(float64(info.JREFreeMemory))
 			case <-interrupt:
