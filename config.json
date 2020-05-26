@@ -1,5 +1,11 @@
 {
   "bind_address": ":2112",
+  "folder_sizes": [
+    {
+      "id": "db_dir",
+      "path": "./"
+    }
+  ],
   "hornet_nodes": [
     {
       "id": "hornet_a",

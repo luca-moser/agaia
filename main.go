@@ -21,6 +21,12 @@ func main() {
 		go spawnHornetCollector(hornetCfg.ID, hornetCfg.Host)
 	}
 
+	// spawn folder collectors
+	for _, folderCfg := range cfg.FolderSizes {
+		log.Printf("spawning folder collector for %s - %s", folderCfg.ID, folderCfg.Path)
+		go spawnFolderSizeCollector(folderCfg.ID, folderCfg.Path)
+	}
+
 	// spawn IRI collectors
 	for _, iriCfg := range cfg.IRINodes {
 		log.Printf("spawning IRI collector for %s - %s", iriCfg.ID, iriCfg.Host)

@@ -21,9 +21,15 @@ func readConfig() *config {
 }
 
 type config struct {
-	BindAddress string      `json:"bind_address"`
-	HornetNodes []hornetcfg `json:"hornet_nodes"`
-	IRINodes    []iricfg    `json:"iri_nodes"`
+	BindAddress string          `json:"bind_address"`
+	FolderSizes []folderSizeCfg `json:"folder_sizes"`
+	HornetNodes []hornetcfg     `json:"hornet_nodes"`
+	IRINodes    []iricfg        `json:"iri_nodes"`
+}
+
+type folderSizeCfg struct {
+	ID   string `json:"id"`
+	Path string `json:"path"`
 }
 
 type hornetcfg struct {
