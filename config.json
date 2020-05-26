@@ -1,5 +1,5 @@
 {
-  "bind_addres": ":2112",
+  "bind_address": ":2112",
   "hornet_nodes": [
     {
       "id": "hornet_a",
