@@ -1,0 +1,19 @@
+{
+  "bind_addres": ":2112",
+  "hornet_nodes": [
+    {
+      "id": "hornet_a",
+      "host": "127.0.0.1:8081"
+    },
+    {
+      "id": "hornet_b",
+      "host": "127.0.0.1:8082"
+    }
+  ],
+  "iri_nodes": [
+    {
+      "id": "iri_a",
+      "host": "127.0.0.1:14265"
+    }
+  ]
+}
