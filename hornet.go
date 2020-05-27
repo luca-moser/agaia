@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
@@ -84,37 +85,54 @@ func NewHornetMetrics(id string) *HornetMetrics {
 	}
 }
 
-func spawnHornetCollector(id string, host string) {
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-	defer close(interrupt)
-
+func connectWS(host string) (*websocket.Conn, error) {
 	u := url.URL{Scheme: "ws", Host: host, Path: "/ws"}
 	log.Printf("connecting to %s", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		log.Fatal("dial:", err)
+		return nil, err
 	}
-	defer c.Close()
+	return c, nil
+}
 
-	done := make(chan struct{})
+func retryConnectWebSocket(host string) *websocket.Conn {
+	retryTicker := time.NewTicker(2 * time.Second)
+	defer retryTicker.Stop()
+	var c *websocket.Conn
+	var err error
+	for range retryTicker.C {
+		c, err = connectWS(host)
+		if err != nil {
+			continue
+		}
+		break
+	}
+	return c
+}
+
+func spawnHornetCollector(id string, host string) {
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+	defer close(interrupt)
 
 	hornetMetrics := NewHornetMetrics(id)
 
 	go func() {
-		defer close(done)
+		c := retryConnectWebSocket(host)
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				log.Println("read:", err)
-				return
+				log.Println("couldn't read websocket message on", id, "host", host)
+				c = retryConnectWebSocket(host)
+				continue
 			}
 
 			wsMessage := &WebSocketMsg{}
 			if err := json.Unmarshal(message, wsMessage); err != nil {
-				log.Println("read:", err)
-				return
+				log.Println("unable to parse message on", id, "host", host)
+				c = retryConnectWebSocket(host)
+				continue
 			}
 
 			if wsMessage.Type == MsgTypeTPSMetric {
